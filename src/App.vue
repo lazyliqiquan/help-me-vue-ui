@@ -1,9 +1,15 @@
 <template>
   <v-app>
-    <TopNavigationBar/>
+    <RouterView/>
   </v-app>
 </template>
 
-<script setup lang="ts">
-import TopNavigationBar from "./layouts/TopNavigationBar.vue";
+<script setup>
+import {ref} from 'vue'
+
+const theme = ref('light')
+
+function onClick() {
+  theme.value = theme.value === 'light' ? 'dark' : 'light'
+}
 </script>
