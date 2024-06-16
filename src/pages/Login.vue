@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref, watch} from "vue";
 
 const rememberMe = ref(false)
 const isPasswordVisible = ref(false)
@@ -8,9 +8,10 @@ const nameOrEmail = ref('')
 const password = ref('')
 const loginTypeIcons = ['fas fa-user', 'fas fa-envelope', 'fas fa-shield-virus']
 
-function switchLoginType(index: number): void {
-  loginType.value = index
-}
+watch(rememberMe, () => {
+  localStorage.setItem('rememberMe', rememberMe.value.toString())
+})
+
 </script>
 
 <template>
@@ -31,7 +32,7 @@ function switchLoginType(index: number): void {
           <VCol cols="12" align="center">
             <VBtnGroup>
               <VBtn v-for="(icon,i) in loginTypeIcons" :key="icon" :icon="icon" variant="outlined"
-                    :active="loginType == i" @click="switchLoginType(i)"></VBtn>
+                    :active="loginType == i" @click="loginType = i"></VBtn>
             </VBtnGroup>
           </VCol>
 
@@ -55,17 +56,19 @@ function switchLoginType(index: number): void {
             />
             <CountDown v-else/>
           </VCol>
-
-          <VCol cols="12">
-            <!-- remember me checkbox -->
-            <div class="d-flex align-center justify-space-between flex-wrap">
+          <VRow justify="space-between">
+            <VCol cols="6">
               <VCheckbox
                 v-model="rememberMe"
                 label="Remember me"
               />
-            </div>
-
-            <!-- login button -->
+            </VCol>
+            <VCol cols="6" align-self="center" style="margin-bottom: 20px">
+              <v-btn variant="text">find password</v-btn>
+            </VCol>
+          </VRow>
+          <!-- login button -->
+          <VCol cols="12">
             <VBtn
               block
               type="submit"
@@ -73,27 +76,13 @@ function switchLoginType(index: number): void {
               Login
             </VBtn>
           </VCol>
-
           <!-- create account -->
           <VCol
             cols="12"
             class="text-center text-base"
           >
-            <span>New on our platform?</span>
-            <RouterLink
-              class="text-primary ms-2"
-              to="/register"
-            >
-              Create an account
-            </RouterLink>
-          </VCol>
-
-          <!-- auth providers -->
-          <VCol
-            cols="12"
-            class="text-center"
-          >
-            <AuthProvider/>
+            <span>You don't have an account yet?</span>
+            <v-btn variant="text">Create a account</v-btn>
           </VCol>
         </VRow>
       </VCardText>
