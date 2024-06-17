@@ -21,7 +21,7 @@ function getAuthCode(code: string) {
       max-width="450">
       <VCardItem class="justify-start">
         <template #prepend>
-          <VBtn icon="fas fa-arrow-left" @click="router.push({path:'/login'})"/>
+          <VBtn icon="fas fa-arrow-left" @click="router.replace({path:'/login'})"/>
         </template>
         <VCardTitle class="font-weight-semibold text-2xl">
           Register

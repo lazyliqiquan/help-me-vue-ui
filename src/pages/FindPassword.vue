@@ -8,6 +8,31 @@ const authCode = ref('')
 const newPassword = ref('')
 const confirmPassword = ref('')
 
+function verifyInput(): string {
+  if (newPassword.value.length <= 0) {
+    return 'The password cannot be empty'
+  }
+  if (newPassword.value.length > website.passwordLength) {
+    return `The password cannot exceed ${website.passwordLength} characters`
+  }
+  if (newPassword.value.includes(website.blankSpace)) {
+    return 'The password cannot contain Spaces'
+  }
+  if (newPassword.value !== confirmPassword.value) {
+    return 'The passwords entered before and after are inconsistent'
+  }
+  if (email.value.length <= 0) {
+    return 'The email address cannot be empty'
+  }
+  if (email.value.length > website.nameOrEmailLength) {
+    return `The email address cannot exceed ${website.nameOrEmailLength} characters`
+  }
+  if (email.value.includes(website.blankSpace)) {
+    return 'The email address cannot contain Spaces'
+  }
+  return ''
+}
+
 function getAuthCode(code: string) {
   authCode.value = code
 }
@@ -20,7 +45,7 @@ function getAuthCode(code: string) {
       max-width="450">
       <VCardItem class="justify-start">
         <template #prepend>
-          <VBtn icon="fas fa-arrow-left" @click="router.push({path:'/login'})"/>
+          <VBtn icon="fas fa-arrow-left" @click="router.replace({path:'/login'})"/>
         </template>
         <VCardTitle class="font-weight-semibold text-2xl">
           Find Password
@@ -31,7 +56,7 @@ function getAuthCode(code: string) {
           <VCol cols="12">
             <VTextField
               v-model="newPassword"
-              label="Password"
+              label="New Password"
               :counter="website.passwordLength"
             />
           </VCol>

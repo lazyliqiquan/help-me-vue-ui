@@ -2,6 +2,10 @@
 import {ref, watch} from "vue";
 import {website} from "../settings/website";
 import {router} from "../plugins/router";
+import useLogin from "../hooks/useLogin"
+import http from "../utils/http";
+
+const {verifyInput, isValidEmail} = useLogin()
 
 const rememberMe = ref(false)
 const isPasswordVisible = ref(false)
@@ -15,43 +19,47 @@ watch(rememberMe, () => {
 })
 
 function login() {
-  const status: string = verifyInput()
-  if (status.length > 0) {
-
+  const errMsg: string = verify()
+  if (errMsg.length > 0) {
+    //   todo 弹出一个错误信息
     return
   }
+  http.post('/login', {
+    loginType: loginType.value.toString(),
+    nameOrMail: nameOrEmail.value,
+    authCode: password.value
+  }).then(res => {
+    if (res.data.code === 0) {
+      localStorage.setItem('token', res.data.token)
+    }
+    //   todo 根据状态码和信息 弹出对应的信息框
+  }).catch(err => {
+    console.log(err.toString())
+    //   todo 根据错误信息 弹出对应的信息框
+  })
 }
 
-// 检查用户输入是否合法
-function verifyInput(): string {
-  if (nameOrEmail.value.length <= 0) {
-    return 'The user name or email address cannot be empty'
+function verify(): string {
+  if (loginType.value == 2 && password.value.length < 6) {
+    return 'The verification code is incomplete'
   }
-  if (nameOrEmail.value.length > website.nameOrEmailLength) {
-    return `The length of the user name or email address cannot exceed ${website.nameOrEmailLength}`
+  if (loginType.value > 0 && !isValidEmail(nameOrEmail.value)) {
+    return 'The email address is invalid'
   }
-  if (nameOrEmail.value.includes(website.blankSpace)) {
-    return 'The user name or email address cannot contain Spaces'
+  let errMsg: string = verifyInput(password.value,
+    loginType.value < 2 ? 'password' : 'verification code',
+    loginType.value < 2 ? website.passwordLength : website.authCodeLength)
+  if (errMsg.length > 0) {
+    return errMsg
   }
-  if (password.value.length <= 0) {
-    return 'The password cannot be empty'
-  }
-  if (password.value.length > website.passwordLength) {
-    return `The length of the password cannot exceed ${website.passwordLength}`
-  }
-  if (password.value.includes(website.blankSpace)) {
-    return 'The password cannot contain Spaces'
-  }
-  return ''
+  return verifyInput(nameOrEmail.value,
+    loginType.value == 0 ? 'username' : 'email address',
+    website.nameOrEmailLength)
 }
 
 // 从验证码组件获取验证码
 function getAuthCode(authCode: string) {
   password.value = authCode
-}
-
-function toRegister() {
-  router.push({path: '/register'})
 }
 </script>
 
