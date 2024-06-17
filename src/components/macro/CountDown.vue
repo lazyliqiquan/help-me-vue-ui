@@ -2,6 +2,8 @@
 import {ref} from "vue";
 import http from "../../utils/http";
 
+let {getAuthCode} = defineProps(['getAuthCode'])
+
 // 验证码有效时间
 // -2 正在发送请求中，等待后端的回复 展示一个无限滚动的环形进度
 // -1 展示SEND CODE
@@ -48,6 +50,7 @@ async function sendCode() {
     }, 10000)
   })
 }
+
 </script>
 
 <template>
@@ -75,7 +78,7 @@ async function sendCode() {
       </v-snackbar>
     </VCol>
     <VCol cols="8">
-      <v-otp-input></v-otp-input>
+      <v-otp-input @update:modelValue="getAuthCode"></v-otp-input>
     </VCol>
   </VRow>
 </template>

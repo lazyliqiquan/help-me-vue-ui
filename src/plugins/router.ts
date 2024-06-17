@@ -2,8 +2,15 @@ import {createRouter, createWebHistory} from 'vue-router'
 
 const routes = [
   {
-    path: '/',
+    path: '/login',
     component: () => import('../pages/Login.vue'),
+  },
+  {
+    path: '/register',
+    component: () => import('../pages/Register.vue'),
+  }, {
+    path: '/find-password',
+    component: () => import('../pages/FindPassword.vue'),
   }
 ]
 
