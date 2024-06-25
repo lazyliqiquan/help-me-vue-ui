@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import http from "../../utils/http";
+import {useInfoStore} from "../../store/info";
+import useLogin from "../../hooks/useLogin";
 
-let {getAuthCode} = defineProps(['getAuthCode'])
+const {isValidEmail} = useLogin()
+
+const infoStore = useInfoStore();
+//通过props的形式，将子组件的数据传递给父组件
+const props = defineProps(['getAuthCode', 'email'])
 
 // 验证码有效时间
 // -2 正在发送请求中，等待后端的回复 展示一个无限滚动的环形进度
@@ -10,9 +16,9 @@ let {getAuthCode} = defineProps(['getAuthCode'])
 // >=0 展示一个数字，表示验证码的有效剩余时间
 const time = ref(-1)
 let timer: NodeJS.Timeout = null
-const code = ref(0)
-const msg = ref('')
-const showSnackbar = ref(false)
+let code = 0
+let msg = ''
+let loading = false
 
 function getTime() {
   timer && clearTimeout(timer)
@@ -26,13 +32,21 @@ function getTime() {
 }
 
 async function sendCode() {
-  showSnackbar.value = false
+  if(loading){
+    return
+  }
+  if(!isValidEmail(props.email)){
+    infoStore.display('warn','Invalid mailbox')
+    return
+  }
+  infoStore.conceal()
   time.value = -2
+  loading = true
   await http.post('/send-code', {
-    email: '2754294620@qq.com',
+    email: props.email,
   }).then(res => {
-    code.value = res.data.code
-    msg.value = res.data.msg
+    code = res.data.code
+    msg = res.data.msg
     if (res.data.code === 0) {
       time.value = res.data.data.ttl
       getTime()
@@ -40,15 +54,12 @@ async function sendCode() {
       time.value = -1
     }
   }).catch(err => {
-    code.value = 1
-    msg.value = err.toString()
+    code = 1
+    msg = err.toString()
     time.value = -1
-  }).finally(() => {
-    showSnackbar.value = true
-    setTimeout(() => {
-      showSnackbar.value = false
-    }, 10000)
   })
+  infoStore.display(code, msg)
+  loading = false
 }
 
 </script>
@@ -60,25 +71,9 @@ async function sendCode() {
         {{ time == -2 ? null : (time < 0 ? 'send code' : time) }}
         <v-progress-circular indeterminate v-if="time == -2"/>
       </VBtn>
-      <v-snackbar
-        v-model="showSnackbar"
-        :color="code == 0 ? 'success' : 'red-lighten-2' "
-        variant="outlined"
-      >
-        {{ msg }}
-        <template v-slot:actions>
-          <v-btn
-            :color="code == 0 ? 'green' : 'pink'"
-            variant="text"
-            @click="showSnackbar = false"
-          >
-            Close
-          </v-btn>
-        </template>
-      </v-snackbar>
     </VCol>
     <VCol cols="8">
-      <v-otp-input @update:modelValue="getAuthCode"></v-otp-input>
+      <v-otp-input @update:modelValue="props.getAuthCode"></v-otp-input>
     </VCol>
   </VRow>
 </template>

@@ -1,44 +1,47 @@
 <script setup lang="ts">
-import {ref, watch} from "vue";
+import {ref} from "vue";
 import {website} from "../settings/website";
 import {router} from "../plugins/router";
 import useLogin from "../hooks/useLogin"
 import http from "../utils/http";
+import {useInfoStore} from "../store/info";
+
+const infoStore = useInfoStore();
 
 const {verifyInput, isValidEmail} = useLogin()
-
-const rememberMe = ref(false)
 const isPasswordVisible = ref(false)
 const loginType = ref(0)
 const nameOrEmail = ref('')
 const password = ref('')
 const loginTypeIcons = ['fas fa-user', 'fas fa-envelope', 'fas fa-shield-virus']
+let loading = false
 
-watch(rememberMe, () => {
-  localStorage.setItem('rememberMe', rememberMe.value.toString())
-})
-
-function login() {
+async function login() {
   const errMsg: string = verify()
   if (errMsg.length > 0) {
-    //   todo 弹出一个错误信息
+    infoStore.display('warn', errMsg)
     return
   }
-  http.post('/login', {
+  if (loading) {
+    return
+  }
+  loading = true
+  await http.post('/login', {
     loginType: loginType.value.toString(),
     nameOrMail: nameOrEmail.value,
     authCode: password.value
   }).then(res => {
     if (res.data.code === 0) {
-      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('token', res.data.data.token)
     }
-    //   todo 根据状态码和信息 弹出对应的信息框
+    infoStore.display(res.data.code, res.data.msg)
   }).catch(err => {
-    console.log(err.toString())
-    //   todo 根据错误信息 弹出对应的信息框
+    infoStore.display('error', err.toString())
   })
+  loading = false
 }
 
+// 验证用户输入
 function verify(): string {
   if (loginType.value == 2 && password.value.length < 6) {
     return 'The verification code is incomplete'
@@ -46,7 +49,7 @@ function verify(): string {
   if (loginType.value > 0 && !isValidEmail(nameOrEmail.value)) {
     return 'The email address is invalid'
   }
-  let errMsg: string = verifyInput(password.value,
+  const errMsg: string = verifyInput(password.value,
     loginType.value < 2 ? 'password' : 'verification code',
     loginType.value < 2 ? website.passwordLength : website.authCodeLength)
   if (errMsg.length > 0) {
@@ -105,19 +108,9 @@ function getAuthCode(authCode: string) {
               :append-inner-icon="isPasswordVisible ? 'fas fa-eye' : 'fas fa-eye-slash'"
               @click:append-inner="isPasswordVisible = !isPasswordVisible"
             />
-            <CountDown v-else :getAuthCode="getAuthCode"/>
+            <CountDown v-else :getAuthCode="getAuthCode" :email="nameOrEmail"/>
           </VCol>
-          <VRow justify="space-between">
-            <VCol cols="6">
-              <VCheckbox
-                v-model="rememberMe"
-                label="Remember me"
-              />
-            </VCol>
-            <VCol cols="6" align-self="center" style="margin-bottom: 20px">
-              <v-btn variant="text" @click="router.push({path:'/find-password'})">find password</v-btn>
-            </VCol>
-          </VRow>
+
           <!-- login button -->
           <VCol cols="12">
             <VBtn
@@ -128,13 +121,20 @@ function getAuthCode(authCode: string) {
             </VBtn>
           </VCol>
           <!-- create account -->
-          <VCol
-            cols="12"
-            class="text-center text-base"
-          >
-            <span>You don't have an account yet?</span>
-            <v-btn variant="text" @click="router.push({path:'/register'})">Create a account</v-btn>
+          <VCol cols="12" style="margin-top: 15px">
+            <VRow justify="space-between">
+              <VCol
+                cols="6"
+                class="text-center text-base"
+              >
+                <v-btn variant="text" @click="router.push({path:'/register'})">Create a account</v-btn>
+              </VCol>
+              <VCol cols="6" align-self="center" style="margin-bottom: 20px">
+                <v-btn variant="text" @click="router.push({path:'/find-password'})">find password</v-btn>
+              </VCol>
+            </VRow>
           </VCol>
+
         </VRow>
       </VCardText>
     </VCard>

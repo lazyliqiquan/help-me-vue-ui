@@ -1,6 +1,6 @@
 class Website {
-  readonly nameOrEmailLength: number = 20
-  readonly passwordLength: number = 15
+  readonly nameOrEmailLength: number = 25
+  readonly passwordLength: number = 20
   readonly blankSpace: string = ' '
   readonly showSnackbarTime: number = 10000
   readonly authCodeLength: number = 6

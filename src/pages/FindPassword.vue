@@ -2,35 +2,61 @@
 import {router} from "../plugins/router";
 import {website} from "../settings/website";
 import {ref} from "vue";
+import useLogin from "../hooks/useLogin"
+import http from "../utils/http";
+import {useInfoStore} from "../store/info";
 
+const infoStore = useInfoStore();
+
+const {verifyInput, isValidEmail} = useLogin()
 const email = ref('')
 const authCode = ref('')
 const newPassword = ref('')
 const confirmPassword = ref('')
+let loading = false
 
-function verifyInput(): string {
-  if (newPassword.value.length <= 0) {
-    return 'The password cannot be empty'
+async function findPassword() {
+  const err = verify()
+  if (err.length > 0) {
+    infoStore.display('warning', err)
+    return
   }
-  if (newPassword.value.length > website.passwordLength) {
-    return `The password cannot exceed ${website.passwordLength} characters`
+  if (loading) {
+    return
   }
-  if (newPassword.value.includes(website.blankSpace)) {
-    return 'The password cannot contain Spaces'
+  loading = true
+  await http.post('/find-password', {
+    email: email.value,
+    code: authCode.value,
+    password: newPassword.value,
+  }).then(res => {
+    infoStore.display(res.data.code, res.data.msg)
+  }).catch(err => {
+    infoStore.display('error', err.toString())
+  })
+  loading = false
+}
+
+
+function verify(): string {
+  if (authCode.value.length != website.authCodeLength) {
+    return 'The verification code is incomplete'
+  }
+  if (!isValidEmail(email.value)) {
+    return 'The email address is invalid'
   }
   if (newPassword.value !== confirmPassword.value) {
-    return 'The passwords entered before and after are inconsistent'
+    return 'The two entered passwords are inconsistent'
   }
-  if (email.value.length <= 0) {
-    return 'The email address cannot be empty'
+  let err = verifyInput(newPassword.value, 'new password', website.passwordLength)
+  if (err.length > 0) {
+    return err
   }
-  if (email.value.length > website.nameOrEmailLength) {
-    return `The email address cannot exceed ${website.nameOrEmailLength} characters`
+  err = verifyInput(confirmPassword.value, 'confirm password', website.passwordLength)
+  if (err.length > 0) {
+    return err
   }
-  if (email.value.includes(website.blankSpace)) {
-    return 'The email address cannot contain Spaces'
-  }
-  return ''
+  return verifyInput(email.value, 'email address', website.nameOrEmailLength)
 }
 
 function getAuthCode(code: string) {
@@ -75,10 +101,10 @@ function getAuthCode(code: string) {
             />
           </VCol>
           <VCol cols="12">
-            <CountDown :getAuthCode="getAuthCode"/>
+            <CountDown :getAuthCode="getAuthCode" :email="email"/>
           </VCol>
           <VCol cols="12">
-            <VBtn block>Modify</VBtn>
+            <VBtn block @click="findPassword">Modify</VBtn>
           </VCol>
         </VRow>
       </VCardText>
