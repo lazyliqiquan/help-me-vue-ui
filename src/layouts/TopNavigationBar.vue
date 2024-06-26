@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import UserProfile from "./components/UserProfile.vue";
 </script>
 
@@ -11,6 +10,7 @@ import UserProfile from "./components/UserProfile.vue";
     <VSpacer/>
     <UserProfile/>
   </v-app-bar>
+  <div style="height: 40px"></div>
 </template>
 
 <style scoped>

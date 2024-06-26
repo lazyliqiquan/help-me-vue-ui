@@ -1,9 +1,9 @@
 <template>
   <v-app>
-    <InfoBar/>
+    <WebsiteFooter/>
   </v-app>
 </template>
 
 <script setup>
-import InfoBar from "./layouts/InfoBar.vue";
+import WebsiteFooter from "./layouts/WebsiteFooter.vue";
 </script>

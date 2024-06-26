@@ -1,19 +1,20 @@
 <script setup lang="ts">
-//todo ipc 备案
+import InfoBar from "./InfoBar.vue";
 </script>
 
 <template>
-  <div class="footer">
-
+  <InfoBar/>
+  <div class="footer" ref="div">
+<!--    todo 在这里加上具体的内容-->
   </div>
 </template>
 
 <style scoped>
   .footer{
     width: 100%;
-    height: 200px;
+    height: 400px;
     padding: 20px;
-    margin-top: 50px;
+    margin-top: 100px;
     background-color: black;
   }
 </style>

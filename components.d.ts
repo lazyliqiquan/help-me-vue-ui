@@ -9,6 +9,9 @@ declare module 'vue' {
   export interface GlobalComponents {
     CountDown: typeof import('./src/components/macro/CountDown.vue')['default']
     Editor: typeof import('./src/components/Editor.vue')['default']
+    HelpCard: typeof import('./src/components/macro/HelpCard.vue')['default']
+    NavigationBar: typeof import('./src/components/macro/NavigationBar.vue')['default']
+    PostTable: typeof import('./src/components/PostTable.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

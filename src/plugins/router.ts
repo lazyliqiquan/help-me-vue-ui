@@ -1,9 +1,14 @@
 import {createRouter, createWebHistory} from 'vue-router'
+import {createApp} from "vue";
 
 const routes = [
   {
     path: '/',
-    redirect: {path: '/login'},
+    redirect: {path: '/home'},
+  },
+  {
+    path: '/home',
+    component: () => import('../pages/Home.vue'),
   },
   {
     path: '/login',
@@ -12,7 +17,8 @@ const routes = [
   {
     path: '/register',
     component: () => import('../pages/Register.vue'),
-  }, {
+  },
+  {
     path: '/find-password',
     component: () => import('../pages/FindPassword.vue'),
   }
