@@ -4,11 +4,15 @@ import {createApp} from "vue";
 const routes = [
   {
     path: '/',
-    redirect: {path: '/home'},
+    redirect: {path: '/edit'},
   },
   {
     path: '/home',
     component: () => import('../pages/Home.vue'),
+  },
+  {
+    path:'/edit',
+    component: () => import('../pages/Edit.vue'),
   },
   {
     path: '/login',

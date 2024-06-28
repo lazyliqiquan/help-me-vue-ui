@@ -5,21 +5,19 @@
  */
 
 // Plugins
-import { registerPlugins } from '@/plugins'
+import {registerPlugins} from '@/plugins'
 
 // Components
 import App from './App.vue'
 
 // Composables
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 // quill
-import {QuillEditor} from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
+
 
 const app = createApp(App)
 
 registerPlugins(app)
-
-app.component('QuillEditor', QuillEditor)
 
 app.mount('#app')
