@@ -1,6 +1,8 @@
 <script setup lang="ts">
 
-const props = defineProps(['isSeekHelp','isPublic'])
+import {router} from "../plugins/router";
+
+const props = defineProps(['isSeekHelp', 'isPublic'])
 
 const items = [
   {title: 'Click Me'},
@@ -20,10 +22,10 @@ const icons = ['fas fa-angle-left']
           Give someone a rose to keep the fragrance
         </div>
       </VCol>
-      <VCol cols="auto" >
+      <VCol cols="auto">
         <VRow v-if="props.isPublic">
           <VCol cols="auto">
-            <v-btn>
+            <v-btn variant="tonal">
               Sort
               <v-menu activator="parent">
                 <v-list>
@@ -39,7 +41,7 @@ const icons = ['fas fa-angle-left']
             </v-btn>
           </VCol>
           <VCol cols="auto">
-            <v-btn>
+            <v-btn variant="tonal">
               filter
               <v-menu activator="parent">
                 <v-list>
@@ -55,11 +57,16 @@ const icons = ['fas fa-angle-left']
             </v-btn>
           </VCol>
           <VCol cols="auto">
-            <v-btn size="40" icon="fas fa-plus"/>
+            <v-btn size="40" variant="tonal" @click="router.push({path:'/edit'})">
+              <VIcon icon="fas fa-plus"/>
+              <v-tooltip activator="parent" location="top">
+                Seek help
+              </v-tooltip>
+            </v-btn>
           </VCol>
         </VRow>
         <VBtnGroup v-else>
-          <VBtn v-for="i in 2" icon="fas fa-add"  active variant="outlined"></VBtn>
+          <VBtn v-for="i in 2" icon="fas fa-add" active variant="outlined"></VBtn>
         </VBtnGroup>
       </VCol>
     </VRow>

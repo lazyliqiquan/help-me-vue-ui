@@ -1,5 +1,6 @@
 <template>
   <Editor/>
+  <LeftEdit/>
 </template>
 <script setup lang="ts">
 

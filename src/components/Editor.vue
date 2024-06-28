@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import Quill from "Quill"
 import {onMounted} from "vue";
+import {useEditStore} from "@/store/edit";
 
+const editStore = useEditStore();
 onMounted(() => {
-  const quill = new Quill('#editor', {
+
+  editStore.quill = new Quill('#editor', {
     modules: {
       toolbar: '#toolbar'
     },
@@ -15,7 +18,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="toolbar" class="fixed-top">
+  <div id="toolbar" v-show="!editStore.readonly" class="fixed-top">
     <select class="ql-size" style="width: 70px">
       <option value="small"></option>
       <option selected></option>
