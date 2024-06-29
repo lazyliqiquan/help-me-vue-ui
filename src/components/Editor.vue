@@ -2,18 +2,29 @@
 import Quill from "Quill"
 import {onMounted} from "vue";
 import {useEditStore} from "@/store/edit";
+import hljs from 'highlight.js'
 
 const editStore = useEditStore();
 onMounted(() => {
-
   editStore.quill = new Quill('#editor', {
     modules: {
+      syntax:{hljs},
       toolbar: '#toolbar'
     },
     placeholder: 'Compose an epic...',
     theme: 'snow',
-
   });
+  setTimeout(()=>{
+    const Delta = Quill.import('delta');
+    editStore.quill.setContents(
+      new Delta()
+        .insert('const language = "JavaScript";')
+        .insert('\n', { 'code-block': 'javascript' })
+        .insert('console.log("I love " + language + "!");')
+        .insert('\n', { 'code-block': 'javascript' })
+    );
+  },1000)
+
 })
 </script>
 

@@ -1,9 +1,21 @@
 <script setup lang="ts">
 import TopNavigationBar from "../layouts/TopNavigationBar.vue";
 import PostTable from "../components/PostTable.vue";
+import {router} from "../plugins/router";
 
 function onCall() {
-  alert(`width : ${window.innerWidth} - height : ${window.innerHeight}`)
+  router.push({
+    path: '/middle-route', query: {
+      content: 'sdasdsdsjd'
+    }
+  });
+  // 路由
+  // window.open('http://localhost:3003/middle-route?content=sjdjsdsdlskd','_blank')
+  // const location = window.location
+  // const url = location.protocol + '//' + location.host
+  // alert(url)
+  // 窗口大小
+  // alert(`width : ${window.innerWidth} - height : ${window.innerHeight}`)
 }
 </script>
 

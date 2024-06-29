@@ -12,8 +12,7 @@ import App from './App.vue'
 
 // Composables
 import {createApp} from 'vue'
-// quill
-import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import 'quill/dist/quill.snow.css'
 
 
 const app = createApp(App)

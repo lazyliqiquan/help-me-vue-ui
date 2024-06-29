@@ -5,6 +5,7 @@ import {ref} from "vue";
 import useLogin from "../hooks/useLogin"
 import http from "../utils/http";
 import {useInfoStore} from "../store/info";
+import FullScreen from "../layouts/components/FullScreen.vue";
 
 const infoStore = useInfoStore();
 
@@ -65,51 +66,53 @@ function getAuthCode(code: string) {
 </script>
 
 <template>
-  <div class="auth-wrapper d-flex align-center justify-center pa-4">
-    <VCard
-      class="auth-card pa-4 pt-7"
-      max-width="450">
-      <VCardItem class="justify-start">
-        <template #prepend>
-          <VBtn icon="fas fa-arrow-left" @click="router.replace({path:'/login'})"/>
-        </template>
-        <VCardTitle class="font-weight-semibold text-2xl">
-          Find Password
-        </VCardTitle>
-      </VCardItem>
-      <VCardText>
-        <VRow dense>
-          <VCol cols="12">
-            <VTextField
-              v-model="newPassword"
-              label="New Password"
-              :counter="website.passwordLength"
-            />
-          </VCol>
-          <VCol cols="12">
-            <VTextField
-              v-model="confirmPassword"
-              label="Confirm Password"
-              :counter="website.passwordLength"
-            />
-          </VCol>
-          <VCol cols="12">
-            <VTextField
-              v-model="email"
-              label="Email"
-              :counter="website.nameOrEmailLength"
-            />
-          </VCol>
-          <VCol cols="12">
-            <CountDown :getAuthCode="getAuthCode" :email="email"/>
-          </VCol>
-          <VCol cols="12">
-            <VBtn block @click="findPassword">Modify</VBtn>
-          </VCol>
-        </VRow>
-      </VCardText>
-    </VCard>
-  </div>
+  <FullScreen>
+    <div class="auth-wrapper d-flex align-center justify-center pa-4">
+      <VCard
+        class="auth-card pa-4 pt-7"
+        max-width="450">
+        <VCardItem class="justify-start">
+          <template #prepend>
+            <VBtn icon="fas fa-arrow-left" @click="router.replace({path:'/login'})"/>
+          </template>
+          <VCardTitle class="font-weight-semibold text-2xl">
+            Find Password
+          </VCardTitle>
+        </VCardItem>
+        <VCardText>
+          <VRow dense>
+            <VCol cols="12">
+              <VTextField
+                v-model="newPassword"
+                label="New Password"
+                :counter="website.passwordLength"
+              />
+            </VCol>
+            <VCol cols="12">
+              <VTextField
+                v-model="confirmPassword"
+                label="Confirm Password"
+                :counter="website.passwordLength"
+              />
+            </VCol>
+            <VCol cols="12">
+              <VTextField
+                v-model="email"
+                label="Email"
+                :counter="website.nameOrEmailLength"
+              />
+            </VCol>
+            <VCol cols="12">
+              <CountDown :getAuthCode="getAuthCode" :email="email"/>
+            </VCol>
+            <VCol cols="12">
+              <VBtn block @click="findPassword">Modify</VBtn>
+            </VCol>
+          </VRow>
+        </VCardText>
+      </VCard>
+    </div>
+  </FullScreen>
 </template>
 
 <style scoped>
