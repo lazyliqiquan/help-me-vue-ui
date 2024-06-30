@@ -15,14 +15,14 @@ onMounted(() => {
     theme: 'snow',
   });
   setTimeout(()=>{
-    const Delta = Quill.import('delta');
-    editStore.quill.setContents(
-      new Delta()
-        .insert('const language = "JavaScript";')
-        .insert('\n', { 'code-block': 'javascript' })
-        .insert('console.log("I love " + language + "!");')
-        .insert('\n', { 'code-block': 'javascript' })
-    );
+    // const Delta = Quill.import('delta');
+    // editStore.quill.setContents(
+    //   new Delta()
+    //     .insert('const language = "JavaScript";')
+    //     .insert('\n', { 'code-block': 'javascript' })
+    //     .insert('console.log("I love " + language + "!");')
+    //     .insert('\n', { 'code-block': 'javascript' })
+    // );
   },1000)
 
 })

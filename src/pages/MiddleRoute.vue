@@ -2,6 +2,7 @@
 //中间页面的几种情况
 // 1. 跳转到其他页面前的确认操作
 // 2. 打开一个页面，出现错误
+// 3. 路由不匹配
 import FullScreen from "../layouts/components/FullScreen.vue";
 import ArtText from "../components/macro/ArtText.vue";
 import {useRoute} from "vue-router";
