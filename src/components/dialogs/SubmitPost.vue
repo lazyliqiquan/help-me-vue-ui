@@ -7,15 +7,12 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 const select = ref(1)
 const tag = ref('')
 const tags = ref([])
+
 function input() {
-  if(tag.value.trim().length > 0 && tags.value.length < 3){
+  if (tag.value.trim().length > 0 && tags.value.length < 3) {
     tags.value.unshift(tag.value)
     tag.value = ''
   }
-}
-function removeTag(index: number) {
-  tags.value.splice(index, 1)
-  alert(tags.value.length)
 }
 
 </script>
@@ -32,22 +29,22 @@ function removeTag(index: number) {
               <VTextField v-model="title" label="Title"/>
             </VCol>
             <VCol cols="6">
-              <VTextField v-model="tag" label="tags" @keydown.enter="input"/>
+              <VTextField v-model="tag" label="Tags" @keydown.enter="input"/>
             </VCol>
             <VCol cols="6">
               <v-select
                 :items="numbers"
-                label="select reward"
+                label="Reward"
                 v-model="select"
               ></v-select>
             </VCol>
             <VCol cols="12">
               <VChipGroup v-if="tags.length > 0" dense>
-                <VChip v-for="(item,index) in tags" closable @click:close="removeTag(index)">
-                  {{item}}
-                </VChip >
+                <VChip v-for="(item,index) in tags" :key="item" closable @click:close="tags.splice(index, 1)">
+                  {{ item }}
+                </VChip>
               </VChipGroup>
-              <h4 v-else style="opacity: 0.7">Post tags</h4>
+              <h4 v-else style="opacity: 0.7">Empty tags</h4>
             </VCol>
           </VRow>
         </VCardText>
@@ -55,7 +52,6 @@ function removeTag(index: number) {
         <VBtn height="50">Submit</VBtn>
       </VCard>
     </v-dialog>
-
   </div>
 </template>
 

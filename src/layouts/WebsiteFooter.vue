@@ -5,7 +5,7 @@ import InfoBar from "./InfoBar.vue";
 <template>
   <InfoBar/>
   <div class="footer" ref="div">
-<!--    todo 在这里加上具体的内容-->
+    <h1>LQQ & CPL</h1>
   </div>
 </template>
 
@@ -16,5 +16,8 @@ import InfoBar from "./InfoBar.vue";
     padding: 20px;
     margin-top: 100px;
     background-color: black;
+    align-items: center;
+    justify-content: center;
+    display: flex;
   }
 </style>

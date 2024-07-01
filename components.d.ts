@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ArtText: typeof import('./src/components/macro/ArtText.vue')['default']
+    CenterCard: typeof import('./src/components/CenterCard.vue')['default']
     CountDown: typeof import('./src/components/macro/CountDown.vue')['default']
     EditDetail: typeof import('./src/components/dialogs/EditDetail.vue')['default']
     Editor: typeof import('./src/components/Editor.vue')['default']

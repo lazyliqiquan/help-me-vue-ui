@@ -1,8 +1,8 @@
 <script setup lang="ts">
-//中间页面的几种情况
-// 1. 跳转到其他页面前的确认操作
 import FullScreen from "../layouts/components/FullScreen.vue";
-import ArtText from "../components/macro/ArtText.vue";
+import ArtText from "./macro/ArtText.vue";
+
+
 </script>
 
 <template>
