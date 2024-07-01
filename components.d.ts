@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ArtText: typeof import('./src/components/macro/ArtText.vue')['default']
     CountDown: typeof import('./src/components/macro/CountDown.vue')['default']
+    EditDetail: typeof import('./src/components/dialogs/EditDetail.vue')['default']
     Editor: typeof import('./src/components/Editor.vue')['default']
     HelpCard: typeof import('./src/components/macro/HelpCard.vue')['default']
     LeftEdit: typeof import('./src/components/macro/LeftEdit.vue')['default']
@@ -16,5 +17,6 @@ declare module 'vue' {
     PostTable: typeof import('./src/components/PostTable.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SubmitPost: typeof import('./src/components/dialogs/SubmitPost.vue')['default']
   }
 }

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {useEditStore} from "../../store/edit";
 import {ref} from "vue";
-import {router} from "../../plugins/router";
 
 const editStore = useEditStore();
 
@@ -9,45 +8,17 @@ function switchReadonly(): void {
   editStore.switchReadonly()
 }
 
-const dialog = ref(false)
 </script>
 
 <template>
   <div class="left-top">
-    <div class="text-center">
-      <VBtn @click="dialog = true" icon="fas fa-right-from-bracket" variant="tonal"
-            style="transform: rotate(180deg);"></VBtn>
-      <v-dialog v-model="dialog" width="auto">
-        <v-card
-          max-width="400"
-          prepend-icon="fas fa-warning"
-          text="After you exit the editing screen, the content will not be saved. Are you sure you want to exit."
-          title="Dangerous operation"
-        >
-          <template v-slot:actions>
-            <v-btn
-              class="ms-auto"
-              text="yes"
-              color="error"
-              @click="router.replace({path: '/home'})"
-            />
-            <v-btn
-              class="ms-auto"
-              color="success"
-              text="no"
-              @click="dialog = false"
-            />
-          </template>
-        </v-card>
-      </v-dialog>
-    </div>
 
-    <div style="height: 5px"></div>
+
     <VBtn @click="switchReadonly" :icon="`fas fa-lock${editStore.readonly ? '-open' :''}`" variant="tonal"/>
     <div style="height: 5px"></div>
-    <VBtn @click="" icon="fas fa-pen-to-square" variant="tonal"></VBtn>
+    <SubmitPost :is-seek-help="true"/>
     <div style="height: 5px"></div>
-    <VBtn @click="" icon="fas fa-info" variant="tonal"></VBtn>
+    <EditDetail/>
   </div>
 </template>
 

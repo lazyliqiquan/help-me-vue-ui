@@ -13,6 +13,12 @@ const items = [
 ]
 const icons = ['fas fa-angle-left']
 
+function openEdit() {
+  const location = window.location
+  const url = location.protocol + '//' + location.host + '/edit'
+  window.open(url, '_blank')
+}
+
 </script>
 <template>
   <div style="flex: 1">
@@ -58,7 +64,7 @@ const icons = ['fas fa-angle-left']
             </v-btn>
           </VCol>
           <VCol cols="auto">
-            <v-btn size="40" variant="tonal" @click="router.push({path:'/edit'})">
+            <v-btn size="40" variant="tonal" @click="openEdit">
               <VIcon icon="fas fa-plus"/>
               <v-tooltip activator="parent" location="top">
                 Seek help
