@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useEditStore} from "../../store/edit";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+
 
 const editStore = useEditStore();
 
@@ -12,8 +13,6 @@ function switchReadonly(): void {
 
 <template>
   <div class="left-top">
-
-
     <VBtn @click="switchReadonly" :icon="`fas fa-lock${editStore.readonly ? '-open' :''}`" variant="tonal"/>
     <div style="height: 5px"></div>
     <SubmitPost :is-seek-help="true"/>

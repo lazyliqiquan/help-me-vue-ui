@@ -2,6 +2,7 @@
 import FullScreen from "../layouts/components/FullScreen.vue";
 import ArtText from "./macro/ArtText.vue";
 
+const props = defineProps(['title', 'content', 'func','btnText']);
 
 </script>
 
@@ -13,10 +14,10 @@ import ArtText from "./macro/ArtText.vue";
       </div>
       <VCard>
         <VCardTitle>
-          'Please note that the website you are about to go to is:'
+          {{props.title ?? 'Operate fail'}}
         </VCardTitle>
         <VCardText opacity="0.5">
-          <h3>{{ $route.query.url }}</h3>
+          <h3>{{ props.content}}</h3>
         </VCardText>
         <VCardItem>
           <VDivider thickness="2"></VDivider>
@@ -24,8 +25,8 @@ import ArtText from "./macro/ArtText.vue";
         <VCardItem>
           <VRow justify="end">
             <VCol cols="auto">
-              <VBtn variant="elevated" color="blue" @click="window.location.href = <string>route.query.url">
-                jump
+              <VBtn variant="elevated" color="blue" @click="props.func">
+                {{ props.btnText}}
               </VBtn>
             </VCol>
           </VRow>

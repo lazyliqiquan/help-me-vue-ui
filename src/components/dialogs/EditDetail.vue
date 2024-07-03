@@ -1,20 +1,37 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import {useEditStore} from "../../store/edit";
+
+const editStore = useEditStore();
 const dialog = ref(false)
-const temp = ['','sdsdsadsa','sdsadsadsa']
+
+onMounted(() => {
+  console.log(editStore.restrictions)
+})
+
+const contentKeys = ['Number of words', 'Picture size']
+
+function test() {
+  dialog.value = true
+  // const text = editStore.quill.getText();
+  // alert(text.length);
+  // alert(editStore.quill.getContents().toString())
+}
+
+// 字数、图片大小
 </script>
 
 <template>
   <div class="text-center">
-    <VBtn @click="dialog = true" icon="fas fa-info" variant="tonal"/>
+    <VBtn @click="test" icon="fas fa-info" variant="tonal"/>
     <v-dialog v-model="dialog" width="auto">
-      <v-card  min-width="500">
+      <v-card min-width="500">
         <VCardTitle>Restrictions</VCardTitle>
         <VCardText>
           <ul>
             <li
-              v-for="item in temp"
-              :key="item"
+              v-for="(item,key) in editStore.restrictions"
+              :key="key"
               class="d-flex"
             >
               <div>
@@ -24,7 +41,7 @@ const temp = ['','sdsdsadsa','sdsadsadsa']
                   class="me-3"
                 />
               </div>
-              <span >{{ item }}</span>
+              <span>{{ `${key} : ${item}` }}</span>
             </li>
           </ul>
         </VCardText>
@@ -32,7 +49,7 @@ const temp = ['','sdsdsadsa','sdsadsadsa']
         <VCardText>
           <ul>
             <li
-              v-for="item in temp"
+              v-for="item in contentKeys"
               :key="item"
               class="d-flex"
             >
@@ -43,7 +60,7 @@ const temp = ['','sdsdsadsa','sdsadsadsa']
                   class="me-3"
                 />
               </div>
-              <span >{{ item }}</span>
+              <span>{{ editStore.quill.getText().length }}</span>
             </li>
           </ul>
         </VCardText>

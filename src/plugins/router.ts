@@ -10,6 +10,9 @@ const routes = [
   }, {
     path: '/middle-route',
     component: () => import('../pages/MiddleRoute.vue'),
+  },{
+    path: '/error',
+    component: () => import('../pages/Error.vue'),
   }, {
     path: '/edit',
     component: () => import('../pages/edit/AddSeekHelp.vue'),

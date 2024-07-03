@@ -14,6 +14,7 @@ declare module 'vue' {
     Editor: typeof import('./src/components/Editor.vue')['default']
     HelpCard: typeof import('./src/components/macro/HelpCard.vue')['default']
     LeftEdit: typeof import('./src/components/macro/LeftEdit.vue')['default']
+    Loading: typeof import('./src/components/Loading.vue')['default']
     NavigationBar: typeof import('./src/components/macro/NavigationBar.vue')['default']
     PostTable: typeof import('./src/components/PostTable.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

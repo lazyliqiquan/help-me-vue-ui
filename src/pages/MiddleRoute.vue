@@ -1,38 +1,19 @@
 <script setup lang="ts">
 //中间页面的几种情况
 // 1. 跳转到其他页面前的确认操作
-import FullScreen from "../layouts/components/FullScreen.vue";
-import ArtText from "../components/macro/ArtText.vue";
+import {useRoute} from "vue-router";
+
+function jump() {
+  window.location.href = <string>useRoute().query.url
+}
 </script>
 
 <template>
-  <FullScreen>
-    <div style="width: 550px;height: auto">
-      <div style="margin-bottom: 10px;margin-left: 10px">
-        <ArtText text="HELP ME"></ArtText>
-      </div>
-      <VCard>
-        <VCardTitle>
-          'Please note that the website you are about to go to is:'
-        </VCardTitle>
-        <VCardText opacity="0.5">
-          <h3>{{ $route.query.url }}</h3>
-        </VCardText>
-        <VCardItem>
-          <VDivider thickness="2"></VDivider>
-        </VCardItem>
-        <VCardItem>
-          <VRow justify="end">
-            <VCol cols="auto">
-              <VBtn variant="elevated" color="blue" @click="window.location.href = <string>route.query.url">
-                jump
-              </VBtn>
-            </VCol>
-          </VRow>
-        </VCardItem>
-      </VCard>
-    </div>
-  </FullScreen>
+  <CenterCard
+    title="Please note that the website you are about to go to is:"
+    :content="$route.query.url"
+    :func="jump"
+    btnText="jump"/>
 </template>
 
 <style scoped>
