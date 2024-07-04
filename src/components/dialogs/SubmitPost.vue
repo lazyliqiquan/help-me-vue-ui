@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import {ref} from "vue";
+import {useEditStore} from "../../store/edit";
+
+const editStore = useEditStore();
 
 const dialog = ref(false)
 const title = ref('')
-const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-const select = ref(1)
+// const maxReward = editStore.restrictions.maxReward
+const rewardList = function (){
+  editStore.restrictions.reward
+}
+const numbers = editStore
+const reward = ref(1)
 const tag = ref('')
 const tags = ref([])
 
@@ -28,14 +35,14 @@ function input() {
             <VCol cols="12">
               <VTextField v-model="title" label="Title"/>
             </VCol>
-            <VCol cols="6">
+            <VCol cols="8">
               <VTextField v-model="tag" label="Tags" @keydown.enter="input"/>
             </VCol>
-            <VCol cols="6">
+            <VCol cols="4">
               <v-select
                 :items="numbers"
                 label="Reward"
-                v-model="select"
+                v-model="reward"
               ></v-select>
             </VCol>
             <VCol cols="12">

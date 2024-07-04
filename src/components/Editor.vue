@@ -4,28 +4,75 @@ import {onMounted} from "vue";
 import {useEditStore} from "@/store/edit";
 import hljs from 'highlight.js'
 
+
 const editStore = useEditStore();
+
+// 自定义图片上传处理
+function selectLocalImage() {
+  const input = document.createElement('input')
+  input.setAttribute('type', 'file')
+  // 限定只能是图片
+  input.setAttribute('accept', 'image/*')
+  input.click()
+
+  input.onchange = () => {
+    const file = input.files[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        // 1.先计算文档中已经有多大的图片集先，再决定是否插入
+        const images = this.quill.root.querySelectorAll('img')
+        let totalMemory = 0;
+        images.forEach(img => {
+          // todo img就是获取到底dom实例，可以直接修改他的样式
+          // img.setAttribute('width','100px')
+          // img.setAttribute('height','auto')
+          const base64String = img.src.split(',')[1];
+          const byteLength = (base64String.length * 3) / 4 - (base64String.indexOf('=') > 0 ? base64String.length - base64String.indexOf('=') : 0);
+          totalMemory += byteLength;
+        })
+        totalMemory += e.loaded
+        // 还是转化为最小单位字节来比较吧，免得有些用户上传很多个不到1KB的图片
+        // const maxPicturesSize = editStore.restrictions.maxPicturesSize * 1024 * 1024
+        const maxPicturesSize = 13 * 1024
+        if (totalMemory > maxPicturesSize) {
+          editStore.activeEditDetail = true
+          console.log('Image size out of limit')
+        } else {
+          const range = this.quill.getSelection()
+          this.quill.insertEmbed(range.index, 'image', e.target.result)
+          this.quill.setSelection(range.index + 1)
+        }
+        console.log(totalMemory)
+      };
+      reader.readAsDataURL(file)
+    }
+  };
+}
+
 onMounted(() => {
-  editStore.quill = new Quill('#editor', {
+  const quill = new Quill('#editor', {
     modules: {
-      syntax:{hljs},
+      syntax: {hljs},
       toolbar: '#toolbar'
     },
     placeholder: 'Compose an epic...',
     theme: 'snow',
   });
-  setTimeout(()=>{
-    // const Delta = Quill.import('delta');
-    // editStore.quill.setContents(
-    //   new Delta()
-    //     .insert('const language = "JavaScript";')
-    //     .insert('\n', { 'code-block': 'javascript' })
-    //     .insert('console.log("I love " + language + "!");')
-    //     .insert('\n', { 'code-block': 'javascript' })
-    // );
-  },1000)
-
+  editStore.initQuill(quill)
+  editStore.quill.getModule('toolbar').addHandler('image', selectLocalImage)
+  // fixme 达到字数上限之后，若在文档末尾光标的前面编写内容，那么最后的文本将会被替换掉
+  quill.on('text-change', (delta, oldDelta, src) => {
+    const textLength = quill.getText().length
+    const maxLength = editStore.restrictions.maxDocumentWords ?? 10
+    if (textLength > maxLength) {
+      quill.deleteText(maxLength, textLength - maxLength)
+      editStore.activeEditDetail = true
+    }
+  })
 })
+
+
 </script>
 
 <template>
@@ -55,7 +102,7 @@ onMounted(() => {
     <select class="ql-align"></select>
     <button class="ql-clean"></button>
   </div>
-  <div id="editor" style="margin-top: 70px;max-width: 95%;min-width: 60%;align-self: center ">
+  <div id="editor" style="margin-top: 70px;max-width: 80%;min-width: 60%;align-self: center ">
   </div>
 </template>
 
@@ -69,5 +116,10 @@ onMounted(() => {
   z-index: 1000;
   align-content: center;
   justify-content: center;
+}
+
+.styled-image {
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5); /* 设置阴影 */
+  border-radius: 10px; /* 可选：设置圆角 */
 }
 </style>
