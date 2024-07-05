@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import Quill from "Quill"
-import {onMounted} from "vue";
+import {onBeforeMount, onMounted} from "vue";
 import {useEditStore} from "@/store/edit";
-import hljs from 'highlight.js'
+import useEdit from "../hooks/useEdit";
+import hljs from "highlight.js"
+import 'highlight.js/styles/github-dark.css'
 
+
+const {calculateAllImageSize} = useEdit()
 
 const editStore = useEditStore();
 
@@ -14,36 +18,25 @@ function selectLocalImage() {
   // 限定只能是图片
   input.setAttribute('accept', 'image/*')
   input.click()
-
   input.onchange = () => {
     const file = input.files[0]
     if (file) {
+      // ================
       const reader = new FileReader()
       reader.onload = (e) => {
         // 1.先计算文档中已经有多大的图片集先，再决定是否插入
-        const images = this.quill.root.querySelectorAll('img')
-        let totalMemory = 0;
-        images.forEach(img => {
-          // todo img就是获取到底dom实例，可以直接修改他的样式
-          // img.setAttribute('width','100px')
-          // img.setAttribute('height','auto')
-          const base64String = img.src.split(',')[1];
-          const byteLength = (base64String.length * 3) / 4 - (base64String.indexOf('=') > 0 ? base64String.length - base64String.indexOf('=') : 0);
-          totalMemory += byteLength;
-        })
+        let totalMemory = calculateAllImageSize(this.quill, editStore.originImageInfoList)
         totalMemory += e.loaded
+        console.log(totalMemory)
         // 还是转化为最小单位字节来比较吧，免得有些用户上传很多个不到1KB的图片
-        // const maxPicturesSize = editStore.restrictions.maxPicturesSize * 1024 * 1024
-        const maxPicturesSize = 13 * 1024
+        const maxPicturesSize = editStore.restrictions.maxPicturesSize * 1024 * 1024
         if (totalMemory > maxPicturesSize) {
           editStore.activeEditDetail = true
-          console.log('Image size out of limit')
         } else {
           const range = this.quill.getSelection()
           this.quill.insertEmbed(range.index, 'image', e.target.result)
           this.quill.setSelection(range.index + 1)
         }
-        console.log(totalMemory)
       };
       reader.readAsDataURL(file)
     }
@@ -51,7 +44,7 @@ function selectLocalImage() {
 }
 
 onMounted(() => {
-  const quill = new Quill('#editor', {
+  const quill: Quill = new Quill('#editor', {
     modules: {
       syntax: {hljs},
       toolbar: '#toolbar'
@@ -59,12 +52,12 @@ onMounted(() => {
     placeholder: 'Compose an epic...',
     theme: 'snow',
   });
-  editStore.initQuill(quill)
+  editStore.quill = quill
   editStore.quill.getModule('toolbar').addHandler('image', selectLocalImage)
   // fixme 达到字数上限之后，若在文档末尾光标的前面编写内容，那么最后的文本将会被替换掉
   quill.on('text-change', (delta, oldDelta, src) => {
     const textLength = quill.getText().length
-    const maxLength = editStore.restrictions.maxDocumentWords ?? 10
+    const maxLength = editStore.restrictions.maxDocumentWords
     if (textLength > maxLength) {
       quill.deleteText(maxLength, textLength - maxLength)
       editStore.activeEditDetail = true

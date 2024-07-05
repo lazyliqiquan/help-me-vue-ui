@@ -2,24 +2,24 @@
 import {ref} from "vue";
 import {useEditStore} from "../../store/edit";
 
-const editStore = useEditStore();
-
+const editStore = useEditStore()
 const dialog = ref(false)
 const title = ref('')
-// const maxReward = editStore.restrictions.maxReward
-const rewardList = function (){
-  editStore.restrictions.reward
-}
-const numbers = editStore
-const reward = ref(1)
+const selectReward = ref(1)
 const tag = ref('')
 const tags = ref([])
 
+// 将输入框中的内容添加到标签集合中
 function input() {
   if (tag.value.trim().length > 0 && tags.value.length < 3) {
     tags.value.unshift(tag.value)
     tag.value = ''
   }
+}
+
+// 上传帖子
+function submitPost() {
+//  上传帖子之前，肯定要先收集帖子的麻
 }
 
 </script>
@@ -35,14 +35,14 @@ function input() {
             <VCol cols="12">
               <VTextField v-model="title" label="Title"/>
             </VCol>
-            <VCol cols="8">
+            <VCol :cols="editStore.restrictions.remainReward > 0 ? 8 : 12">
               <VTextField v-model="tag" label="Tags" @keydown.enter="input"/>
             </VCol>
-            <VCol cols="4">
+            <VCol cols="4" v-if="editStore.restrictions.remainReward > 0">
               <v-select
-                :items="numbers"
+                :items="Array.from({length:editStore.restrictions.remainReward},(_,i)=>i+1)"
                 label="Reward"
-                v-model="reward"
+                v-model="selectReward"
               ></v-select>
             </VCol>
             <VCol cols="12">
