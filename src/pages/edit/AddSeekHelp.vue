@@ -1,26 +1,16 @@
 <script setup lang="ts">
-import http from "../../utils/http";
 import {onMounted, ref} from "vue";
-import {router} from "../../plugins/router";
-import {useEditStore} from "../../store/edit";
+import useEdit from "../../hooks/useEdit";
 
-const editStore = useEditStore();
+const {beforeEdit} = useEdit();
 
 const loading = ref(true);
 
 onMounted(async () => {
-  loading.value = false
-  return
-  await http.post('/before-edit', {
-    postType: '0',
-  }).then(res => {
-    if (res.data.code === 0) {
-      editStore.restrictions = res.data.data.map
-    } else {
-      router.replace({path: '/error', query: {content: res.data.msg}})
-    }
-  }).catch(err => {
-    router.replace({path: '/error', query: {content: err.toString()}})
+  await beforeEdit({
+    postType: 0,
+    seekHelpId: 0,
+    lendHandId: 0
   })
   loading.value = false
 })

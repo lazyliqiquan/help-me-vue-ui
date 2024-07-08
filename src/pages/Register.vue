@@ -6,6 +6,7 @@ import useLogin from "../hooks/useLogin"
 import {useInfoStore} from "../store/info";
 import http from "../utils/http";
 import FullScreen from "../layouts/components/FullScreen.vue";
+import {getDate} from "../utils";
 
 const infoStore = useInfoStore();
 
@@ -33,7 +34,7 @@ async function register() {
     code: authCode.value,
     name: username.value,
     password: password.value,
-    registerTime: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
+    registerTime: getDate(),
   }).then(res => {
     infoStore.display(res.data.code, res.data.msg)
   }).catch(err => {

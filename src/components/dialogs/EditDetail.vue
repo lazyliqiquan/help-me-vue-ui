@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
 import {useEditStore} from "../../store/edit";
 import useEdit from "../../hooks/useEdit";
 import Quill from "Quill";
@@ -12,7 +11,7 @@ const editStore = useEditStore();
 // 获取当前文档的字数以及图片大小
 function getDocumentInfo() {
   editStore.activeEditDetail = true
-  editStore.currentPicturesSize = calculateAllImageSize(<Quill>editStore.quill, editStore.originImageInfoList)
+  editStore.currentPicturesSize = calculateAllImageSize(<Quill>editStore.quill, editStore.post.imageInfoList)
   editStore.currentDocumentWords = editStore.quill.getText().length
 }
 

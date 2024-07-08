@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {useEditStore} from "../../store/edit";
+import {useInfoStore} from "../../store/info";
+import useEdit from "../../hooks/useEdit";
+import Quill from "Quill";
+import http from "../../utils/http";
+import {getTime} from "../../utils";
 
+const {calculateAllImageSize} = useEdit()
 const editStore = useEditStore()
+const infoStore = useInfoStore()
 const dialog = ref(false)
 const title = ref('')
 const selectReward = ref(1)
@@ -17,10 +24,36 @@ function input() {
   }
 }
 
+let loading = false
+
 // 上传帖子
-function submitPost() {
-//  上传帖子之前，肯定要先收集帖子的麻
+async function submitPost() {
+  // 标题不能为空
+  if (title.value.trim().length <= 0) {
+    infoStore.display('warning', 'The post title cannot be empty')
+    return
+  }
+  // 帖子内容不能为空
+  if (editStore.quill.getText().trim().length <= 0 &&
+    calculateAllImageSize(<Quill>editStore.quill, editStore.post.imageInfoList)) {
+    infoStore.display('warning', 'The post content cannot be empty')
+  }
+  const formData = new FormData()
+  formData.append("title", title.value)
+  formData.append("uploadTime",getTime())
+
+  await http.post('/add-post', formData).then(res => {
+    if (res.data.code === 0) {
+
+    } else {
+      infoStore.display('error', res.data.msg)
+    }
+  }).catch(err => {
+    infoStore.display('error', err.toString())
+  })
+  loading = false
 }
+
 
 </script>
 

@@ -16,6 +16,7 @@ function onCall() {
   // alert(url)
   // 窗口大小
   // alert(`width : ${window.innerWidth} - height : ${window.innerHeight}`)
+  console.log(window.location.protocol+'//'+window.location.host+'/');
 }
 </script>
 

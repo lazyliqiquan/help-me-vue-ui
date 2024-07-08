@@ -1,31 +1,38 @@
 // 帖子列表中需要显示的信息
-class PostItem {
-  id: number = 0
-  avatar: string
+import {UserBasicInfo} from "./user";
+
+export class PostItem extends UserBasicInfo {
+  postId: number
   title: string
   createTime: string
-  reward: number
+  postReward: number
   likeSum: number
   lendHandSum: number
   commentSum: number
   status: boolean
-
-  constructor() {
-  }
 }
+
 // 帖子的详细信息
-class PostDetail extends PostItem {
+export class PostDetail extends PostItem {
+  seekHelpId: number// >0 帮助帖子对应的求助帖子
   tags: string[]
   likes: number[]
   postBan: number
   updateTime: string
   pageView: number
-  imageUrls: string[]
-  userId: number
-  userName: string
-  registerTime: string
+  document: string
+  imageInfoList: string[]//imagePath|imageSize
+  parse() {
+
+  }
+}
+
+export interface BeforeEditParam {
+  postType: number
+  seekHelpId: number
+  lendHandId: number
 }
 
 /*
-*
+*没说继承了某个类，就一定要使用所有的属性
 * */

@@ -1,8 +1,5 @@
 <script setup lang="ts">
 
-import {router} from "../plugins/router";
-import http from "../utils/http";
-
 const props = defineProps(['isSeekHelp', 'isPublic'])
 
 const items = [

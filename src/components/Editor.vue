@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import Quill from "Quill"
-import {onBeforeMount, onMounted} from "vue";
+import { onMounted} from "vue";
 import {useEditStore} from "@/store/edit";
 import useEdit from "../hooks/useEdit";
 import hljs from "highlight.js"
 import 'highlight.js/styles/github-dark.css'
-
 
 const {calculateAllImageSize} = useEdit()
 

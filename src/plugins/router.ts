@@ -3,14 +3,26 @@ import {createRouter, createWebHistory} from 'vue-router'
 const routes = [
   {
     path: '/',
-    redirect: {path: '/edit'},
+    redirect: {path: '/login'},
   }, {
     path: '/home',
     component: () => import('../pages/Home.vue'),
   }, {
+    path: '/post',
+    component: () => import('../pages/post/SeekHelpList.vue'),
+  }, {
+    path: '/post:seekHelpId',
+    component: () => import('../pages/post/SeekHelpPost.vue'),
+  }, {
+    path: '/post:seekHelpId/help',
+    component: () => import('../pages/post/LendHandList.vue'),
+  }, {
+    path: '/post:seekHelpId/help/lendHandId',
+    component: () => import('../pages/post/LendHandPost.vue'),
+  }, {
     path: '/middle-route',
     component: () => import('../pages/MiddleRoute.vue'),
-  },{
+  }, {
     path: '/error',
     component: () => import('../pages/Error.vue'),
   }, {
