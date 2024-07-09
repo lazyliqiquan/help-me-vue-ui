@@ -7,11 +7,11 @@ const {beforeEdit} = useEdit();
 const loading = ref(true);
 
 onMounted(async () => {
-  await beforeEdit({
-    postType: 0,
-    seekHelpId: 0,
-    lendHandId: 0
-  })
+  // await beforeEdit({
+  //   postType: 0,
+  //   seekHelpId: 0,
+  //   lendHandId: 0
+  // })
   loading.value = false
 })
 </script>

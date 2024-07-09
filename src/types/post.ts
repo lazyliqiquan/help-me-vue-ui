@@ -1,5 +1,6 @@
 // 帖子列表中需要显示的信息
 import {UserBasicInfo} from "./user";
+import Quill from "Quill";
 
 export class PostItem extends UserBasicInfo {
   postId: number
@@ -14,7 +15,8 @@ export class PostItem extends UserBasicInfo {
 
 // 帖子的详细信息
 export class PostDetail extends PostItem {
-  seekHelpId: number// >0 帮助帖子对应的求助帖子
+  quill: Quill
+  seekHelpId: number = 0// >0 帮助帖子对应的求助帖子
   tags: string[]
   likes: number[]
   postBan: number
@@ -23,7 +25,14 @@ export class PostDetail extends PostItem {
   document: string
   imageInfoList: string[]//imagePath|imageSize
   parse() {
+  }
 
+  test() {
+    this.quill.setContents([
+      {insert: 'Hello '},
+      {insert: 'World!', attributes: {bold: true}},
+      {insert: '\n'},
+    ]);
   }
 }
 

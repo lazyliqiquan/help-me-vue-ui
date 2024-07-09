@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Quill from "Quill"
-import { onMounted} from "vue";
+import {onMounted} from "vue";
 import {useEditStore} from "@/store/edit";
 import useEdit from "../hooks/useEdit";
 import hljs from "highlight.js"
@@ -52,6 +52,7 @@ onMounted(() => {
     theme: 'snow',
   });
   editStore.quill = quill
+  editStore.post.quill = quill
   editStore.quill.getModule('toolbar').addHandler('image', selectLocalImage)
   // fixme 达到字数上限之后，若在文档末尾光标的前面编写内容，那么最后的文本将会被替换掉
   quill.on('text-change', (delta, oldDelta, src) => {
