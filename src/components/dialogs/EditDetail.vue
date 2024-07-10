@@ -1,25 +1,15 @@
 <script setup lang="ts">
-import {useEditStore} from "../../store/edit";
-import useEdit from "../../hooks/useEdit";
-import Quill from "Quill";
+import {useAppStore} from "../../store/app";
 import {formatBytes} from "../../utils";
 
-const {calculateAllImageSize} = useEdit()
-const editStore = useEditStore();
+const appStore = useAppStore()
 
-
-// 获取当前文档的字数以及图片大小
-function getDocumentInfo() {
-  editStore.activeEditDetail = true
-  editStore.currentPicturesSize = calculateAllImageSize(<Quill>editStore.quill, editStore.post.imageInfoList)
-  editStore.currentDocumentWords = editStore.quill.getText().length
-}
 
 function parse(index: number): string {
   if (index == 1) {
-    return `Number of words : ${editStore.currentDocumentWords}`
+    return `Number of words : ${appStore.edit.currentDocumentWords}`
   }
-  return `Picture size : ${formatBytes(editStore.currentPicturesSize)}`
+  return `Picture size : ${formatBytes(appStore.edit.currentPicturesSize)}`
 }
 
 // 字数、图片大小
@@ -27,15 +17,15 @@ function parse(index: number): string {
 
 <template>
   <div class="text-center">
-    <VBtn @click="getDocumentInfo" icon="fas fa-info" variant="tonal"/>
+    <VBtn @click="appStore.edit.getDocumentInfo(appStore.edit.originImageList)" icon="fas fa-info" variant="tonal"/>
     <!--    虽然我们没有设置editStore.activeEditDetail = false,但是这里是v-model，所以对话框消失，就相当于执行了前面的代码-->
-    <v-dialog v-model="editStore.activeEditDetail" width="auto">
+    <v-dialog v-model="appStore.edit.activeEditDetail" width="auto">
       <v-card min-width="500">
         <VCardTitle>Restrictions</VCardTitle>
         <VCardText>
           <ul>
             <li
-              v-for="(item,key) in editStore.restrictions"
+              v-for="(item,key) in appStore.edit.editRestrictions"
               :key="key"
               class="d-flex"
             >

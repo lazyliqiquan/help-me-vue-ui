@@ -9,16 +9,16 @@ const routes = [
     component: () => import('../pages/Home.vue'),
   }, {
     path: '/post',
-    component: () => import('../pages/post/SeekHelpList.vue'),
+    component: () => import('../pages/Post.vue'),
   }, {
     path: '/post:seekHelpId',
-    component: () => import('../pages/post/SeekHelpPost.vue'),
+    component: () => import('../pages/Post.vue'),
   }, {
     path: '/post:seekHelpId/help',
-    component: () => import('../pages/post/LendHandList.vue'),
+    component: () => import('../pages/Post.vue'),
   }, {
     path: '/post:seekHelpId/help/lendHandId',
-    component: () => import('../pages/post/LendHandPost.vue'),
+    component: () => import('../pages/Post.vue'),
   }, {
     path: '/middle-route',
     component: () => import('../pages/MiddleRoute.vue'),
@@ -27,16 +27,16 @@ const routes = [
     component: () => import('../pages/Error.vue'),
   }, {
     path: '/edit',
-    component: () => import('../pages/edit/AddSeekHelp.vue'),
+    component: () => import('../pages/Edit.vue'),
   }, {
     path: '/edit/:seekHelpId',
-    component: () => import('../pages/edit/ModifySeekHelp.vue'),
+    component: () => import('../pages/Edit.vue'),
   }, {
     path: '/edit/:seekHelpId/help',
-    component: () => import('../pages/edit/AddLendHand.vue'),
+    component: () => import('../pages/Edit.vue'),
   }, {
     path: '/edit/:seekHelpId/help/:lendHandId',
-    component: () => import('../pages/edit/ModifyLendHand.vue'),
+    component: () => import('../pages/Edit.vue'),
   }, {
     path: '/login',
     component: () => import('../pages/Login.vue'),

@@ -6,6 +6,23 @@ export function formatBytes(bytes: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
+// 将帖子id，string类型转为int，转换失败返回number,postId应该为正整数
+export function getValidPostId(postId: string): number {
+  if (!postId.trim()) {
+    return 0
+  }
+  // 使用正则表达式检查字符串是否只包含数字字符
+  const numberPattern = /^\d+$/;
+  if (!numberPattern.test(postId)) {
+    return 0
+  }
+  const num = Number(postId)
+  if (!Number.isInteger(num) || num <= 0) {
+    return 0
+  }
+  return num
+}
+
 export function getWebsiteUrl(): string {
   return window.location.protocol + '//' + window.location.host + '/'
 }

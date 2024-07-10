@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import http from "../../utils/http";
-import {useInfoStore} from "../../store/info";
+import {useAppStore} from "../../store/app";
 import useLogin from "../../hooks/useLogin";
 
 const {isValidEmail} = useLogin()
 
-const infoStore = useInfoStore();
+const appStore = useAppStore();
 //通过props的形式，将子组件的数据传递给父组件
 const props = defineProps(['getAuthCode', 'email'])
 
@@ -32,14 +32,14 @@ function getTime() {
 }
 
 async function sendCode() {
-  if(loading){
+  if (loading) {
     return
   }
-  if(!isValidEmail(props.email)){
-    infoStore.display('warn','Invalid mailbox')
+  if (!isValidEmail(props.email)) {
+    appStore.info.display('warning', 'Invalid mailbox')
     return
   }
-  infoStore.conceal()
+  appStore.info.active = false
   time.value = -2
   loading = true
   await http.post('/send-code', {
@@ -58,7 +58,7 @@ async function sendCode() {
     msg = err.toString()
     time.value = -1
   })
-  infoStore.display(code, msg)
+  appStore.info.display(code, msg)
   loading = false
 }
 

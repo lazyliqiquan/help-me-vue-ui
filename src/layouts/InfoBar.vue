@@ -1,22 +1,23 @@
 <script setup lang="ts">
-  import {useInfoStore} from "../store/info";
-  const infoStore = useInfoStore();
+import {useAppStore} from "../store/app"
+
+const appStore = useAppStore()
 </script>
 
 <template>
   <RouterView/>
   <v-snackbar
-    v-model="infoStore.showSnackbar"
-    :color="infoStore.status"
+    v-model="appStore.info.active"
+    :color="appStore.info.status"
     variant="outlined"
     :timeout="-1"
   >
-    {{ infoStore.msg }}
+    {{ appStore.info.msg }}
     <template v-slot:actions>
       <v-btn
         color="pink"
         variant="text"
-        @click="infoStore.conceal()"
+        @click="appStore.info.active = false"
       >
         Close
       </v-btn>

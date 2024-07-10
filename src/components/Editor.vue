@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import Quill from "Quill"
+import Quill from "quill"
 import {onMounted} from "vue";
-import {useEditStore} from "@/store/edit";
-import useEdit from "../hooks/useEdit";
+import {useAppStore} from "../store/app";
 import hljs from "highlight.js"
 import 'highlight.js/styles/github-dark.css'
+import Toolbar from "quill/modules/toolbar";
 
-const {calculateAllImageSize} = useEdit()
-
-const editStore = useEditStore();
+const appStore = useAppStore()
 
 // 自定义图片上传处理
 function selectLocalImage() {
@@ -24,13 +22,13 @@ function selectLocalImage() {
       const reader = new FileReader()
       reader.onload = (e) => {
         // 1.先计算文档中已经有多大的图片集先，再决定是否插入
-        let totalMemory = calculateAllImageSize(this.quill, editStore.originImageInfoList)
+        let totalMemory = appStore.edit.calculateAllImageSize(appStore.edit.originImageList)
         totalMemory += e.loaded
         console.log(totalMemory)
         // 还是转化为最小单位字节来比较吧，免得有些用户上传很多个不到1KB的图片
-        const maxPicturesSize = editStore.restrictions.maxPicturesSize * 1024 * 1024
+        const maxPicturesSize = appStore.edit.editRestrictions.maxPicturesSize * 1024 * 1024
         if (totalMemory > maxPicturesSize) {
-          editStore.activeEditDetail = true
+          appStore.edit.activeEditDetail = true
         } else {
           const range = this.quill.getSelection()
           this.quill.insertEmbed(range.index, 'image', e.target.result)
@@ -51,25 +49,24 @@ onMounted(() => {
     placeholder: 'Compose an epic...',
     theme: 'snow',
   });
-  editStore.quill = quill
-  editStore.post.quill = quill
-  editStore.quill.getModule('toolbar').addHandler('image', selectLocalImage)
+  (quill.getModule('toolbar') as Toolbar).addHandler('image', selectLocalImage)
   // fixme 达到字数上限之后，若在文档末尾光标的前面编写内容，那么最后的文本将会被替换掉
   quill.on('text-change', (delta, oldDelta, src) => {
     const textLength = quill.getText().length
-    const maxLength = editStore.restrictions.maxDocumentWords
+    const maxLength = appStore.edit.editRestrictions.maxDocumentWords
     if (textLength > maxLength) {
       quill.deleteText(maxLength, textLength - maxLength)
-      editStore.activeEditDetail = true
+      appStore.edit.activeEditDetail = true
     }
   })
+  appStore.edit.quill = quill
 })
 
 
 </script>
 
 <template>
-  <div id="toolbar" v-show="!editStore.readonly" class="fixed-top">
+  <div id="toolbar" v-show="!appStore.edit.readOnly" class="fixed-top">
     <select class="ql-size" style="width: 70px">
       <option value="small"></option>
       <option selected></option>

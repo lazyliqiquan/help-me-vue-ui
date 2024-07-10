@@ -1,5 +1,4 @@
-import {website} from "../settings/website";
-import {readonly} from "vue";
+import {website} from "../settings/website"
 
 export default function () {
   // 1 输入不能为空

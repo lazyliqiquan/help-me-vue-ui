@@ -3,11 +3,11 @@ import {router} from "../plugins/router";
 import {website} from "../settings/website";
 import {ref} from "vue";
 import useLogin from "../hooks/useLogin"
-import http from "../utils/http";
-import {useInfoStore} from "../store/info";
-import FullScreen from "../layouts/components/FullScreen.vue";
+import http from "../utils/http"
+import FullScreen from "../layouts/components/FullScreen.vue"
+import {useAppStore} from "../store/app";
 
-const infoStore = useInfoStore();
+const appStore = useAppStore()
 
 const {verifyInput, isValidEmail} = useLogin()
 const email = ref('')
@@ -19,7 +19,7 @@ let loading = false
 async function findPassword() {
   const err = verify()
   if (err.length > 0) {
-    infoStore.display('warning', err)
+    appStore.info.display('warning', err)
     return
   }
   if (loading) {
@@ -31,9 +31,9 @@ async function findPassword() {
     code: authCode.value,
     password: newPassword.value,
   }).then(res => {
-    infoStore.display(res.data.code, res.data.msg)
+    appStore.info.display(res.data.code, res.data.msg)
   }).catch(err => {
-    infoStore.display('error', err.toString())
+    appStore.info.display('error', err.toString())
   })
   loading = false
 }

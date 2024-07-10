@@ -1,59 +1,22 @@
 <script setup lang="ts">
 import {ref} from "vue";
-import {useEditStore} from "../../store/edit";
-import {useInfoStore} from "../../store/info";
-import useEdit from "../../hooks/useEdit";
-import Quill from "Quill";
-import http from "../../utils/http";
-import {getTime} from "../../utils";
+import {useAppStore} from "../../store/app";
+import {website} from "../../settings/website";
 
-const {calculateAllImageSize} = useEdit()
-const editStore = useEditStore()
-const infoStore = useInfoStore()
+const appStore = useAppStore()
 const dialog = ref(false)
-const title = ref('')
-const selectReward = ref(1)
 const tag = ref('')
-const tags = ref([])
 
-// 将输入框中的内容添加到标签集合中
-function input() {
-  if (tag.value.trim().length > 0 && tags.value.length < 3) {
-    tags.value.unshift(tag.value)
+function addTags() {
+  if (appStore.edit.addTag(tag.value)) {
     tag.value = ''
   }
 }
 
-let loading = false
-
-// 上传帖子
-async function submitPost() {
-  // 标题不能为空
-  if (title.value.trim().length <= 0) {
-    infoStore.display('warning', 'The post title cannot be empty')
-    return
-  }
-  // 帖子内容不能为空
-  if (editStore.quill.getText().trim().length <= 0 &&
-    calculateAllImageSize(<Quill>editStore.quill, editStore.post.imageInfoList)) {
-    infoStore.display('warning', 'The post content cannot be empty')
-  }
-  const formData = new FormData()
-  formData.append("title", title.value)
-  formData.append("uploadTime",getTime())
-
-  await http.post('/add-post', formData).then(res => {
-    if (res.data.code === 0) {
-
-    } else {
-      infoStore.display('error', res.data.msg)
-    }
-  }).catch(err => {
-    infoStore.display('error', err.toString())
-  })
-  loading = false
+// 是否显示选择悬赏金组件
+function isShowSelectReward(): boolean {
+  return appStore.edit.postType == 0 || appStore.edit.postType == 1
 }
-
 
 </script>
 
@@ -66,21 +29,27 @@ async function submitPost() {
         <VCardText>
           <VRow dense>
             <VCol cols="12">
-              <VTextField v-model="title" label="Title"/>
+              <VTextField v-model="appStore.edit.title" label="Title" :maxLength="website.postTitleLength"/>
             </VCol>
-            <VCol :cols="editStore.restrictions.remainReward > 0 ? 8 : 12">
-              <VTextField v-model="tag" label="Tags" @keydown.enter="input"/>
+            <VCol :cols="isShowSelectReward ? 8 : 12">
+              <VTextField
+                v-model="tag"
+                label="Tags"
+                :maxLength="website.singleTagLength"
+                @keydown.enter="addTags"/>
             </VCol>
-            <VCol cols="4" v-if="editStore.restrictions.remainReward > 0">
+            <VCol cols="4" v-if="isShowSelectReward">
               <v-select
-                :items="Array.from({length:editStore.restrictions.remainReward},(_,i)=>i+1)"
+                :items="Array.from({length:appStore.edit.editRestrictions.remainReward},(_,i)=>i+1)"
                 label="Reward"
-                v-model="selectReward"
+                v-model="appStore.edit.reward"
+                :readonly="true"
               ></v-select>
             </VCol>
             <VCol cols="12">
-              <VChipGroup v-if="tags.length > 0" dense>
-                <VChip v-for="(item,index) in tags" :key="item" closable @click:close="tags.splice(index, 1)">
+              <VChipGroup v-if="appStore.edit.tags.length > 0" dense>
+                <VChip v-for="(item,index) in appStore.edit.tags" :key="item" closable
+                       @click:close="appStore.edit.tags.splice(index, 1)">
                   {{ item }}
                 </VChip>
               </VChipGroup>
@@ -89,7 +58,7 @@ async function submitPost() {
           </VRow>
         </VCardText>
         <VDivider thickness="2"/>
-        <VBtn height="50">Submit</VBtn>
+        <VBtn height="50" @click="appStore.edit.submitPost">Submit</VBtn>
       </VCard>
     </v-dialog>
   </div>

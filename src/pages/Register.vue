@@ -3,13 +3,12 @@ import {website} from "../settings/website";
 import {ref} from "vue";
 import {router} from "../plugins/router";
 import useLogin from "../hooks/useLogin"
-import {useInfoStore} from "../store/info";
 import http from "../utils/http";
 import FullScreen from "../layouts/components/FullScreen.vue";
 import {getDate} from "../utils";
+import {useAppStore} from "../store/app";
 
-const infoStore = useInfoStore();
-
+const appStore = useAppStore();
 const {verifyInput, isValidEmail} = useLogin()
 
 const username = ref('')
@@ -21,14 +20,13 @@ let loading = false
 async function register() {
   const err = verify()
   if (err.length > 0) {
-    infoStore.display('warning', err)
+    appStore.info.display('warning', err)
     return
   }
   if (loading) {
     return
   }
   loading = true
-  const today = new Date();
   await http.post('/register', {
     email: email.value,
     code: authCode.value,
@@ -36,9 +34,9 @@ async function register() {
     password: password.value,
     registerTime: getDate(),
   }).then(res => {
-    infoStore.display(res.data.code, res.data.msg)
+    appStore.info.display(res.data.code, res.data.msg)
   }).catch(err => {
-    infoStore.display('error', err.toString())
+    appStore.info.display('error', err.toString())
   })
   loading = false
 }

@@ -4,11 +4,11 @@ import {website} from "../settings/website";
 import {router} from "../plugins/router";
 import useLogin from "../hooks/useLogin"
 import http from "../utils/http";
-import {useInfoStore} from "../store/info";
 import FullScreen from "../layouts/components/FullScreen.vue";
 
-const infoStore = useInfoStore();
+import {useAppStore} from "../store/app";
 
+const appStore = useAppStore();
 const {verifyInput, isValidEmail} = useLogin()
 const isPasswordVisible = ref(false)
 const loginType = ref(0)
@@ -20,7 +20,7 @@ let loading = false
 async function login() {
   const errMsg: string = verify()
   if (errMsg.length > 0) {
-    infoStore.display('warn', errMsg)
+    appStore.info.display('warn', errMsg)
     return
   }
   if (loading) {
@@ -35,10 +35,11 @@ async function login() {
     if (res.data.code === 0) {
       localStorage.setItem('token', res.data.data.token)
       router.replace({path: '/home'})
+    } else {
+      appStore.info.display(res.data.code, res.data.msg)
     }
-    // infoStore.display(res.data.code, res.data.msg)
   }).catch(err => {
-    infoStore.display('error', err.toString())
+    appStore.info.display('error', err.toString())
   })
   loading = false
 }
@@ -69,80 +70,80 @@ function getAuthCode(authCode: string) {
 </script>
 
 <template>
- <FullScreen>
-     <div class="auth-wrapper d-flex align-center justify-center pa-4">
-       <VCard
-         class="auth-card pa-4 pt-7"
-         max-width="450"
-       >
-         <VCardItem class="justify-center">
-           <VCardTitle class="font-weight-semibold text-2xl text-uppercase">
-             Help Me
-           </VCardTitle>
-         </VCardItem>
+  <FullScreen>
+    <div class="auth-wrapper d-flex align-center justify-center pa-4">
+      <VCard
+        class="auth-card pa-4 pt-7"
+        max-width="450"
+      >
+        <VCardItem class="justify-center">
+          <VCardTitle class="font-weight-semibold text-2xl text-uppercase">
+            Help Me
+          </VCardTitle>
+        </VCardItem>
 
 
-         <VCardText>
-           <VRow dense>
-             <VCol cols="12" align="center">
-               <VBtnGroup>
-                 <VBtn v-for="(icon,i) in loginTypeIcons" :key="icon" :icon="icon" variant="outlined"
-                       :active="loginType == i" @click="loginType = i"></VBtn>
-               </VBtnGroup>
-             </VCol>
+        <VCardText>
+          <VRow dense>
+            <VCol cols="12" align="center">
+              <VBtnGroup>
+                <VBtn v-for="(icon,i) in loginTypeIcons" :key="icon" :icon="icon" variant="outlined"
+                      :active="loginType == i" @click="loginType = i"></VBtn>
+              </VBtnGroup>
+            </VCol>
 
-             <!-- email -->
-             <VCol cols="12">
-               <VTextField
-                 v-model="nameOrEmail"
-                 :label="loginType == 0 ? 'Name' : 'Email'"
-                 :counter="website.nameOrEmailLength"
-               />
-             </VCol>
+            <!-- email -->
+            <VCol cols="12">
+              <VTextField
+                v-model="nameOrEmail"
+                :label="loginType == 0 ? 'Name' : 'Email'"
+                :counter="website.nameOrEmailLength"
+              />
+            </VCol>
 
-             <!-- password -->
-             <VCol cols="12">
-               <VTextField
-                 v-if="loginType < 2"
-                 v-model="password"
-                 label="Password"
-                 :counter="website.passwordLength"
-                 :type="isPasswordVisible ? 'text' : 'password'"
-                 :append-inner-icon="isPasswordVisible ? 'fas fa-eye' : 'fas fa-eye-slash'"
-                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
-               />
-               <CountDown v-else :getAuthCode="getAuthCode" :email="nameOrEmail"/>
-             </VCol>
+            <!-- password -->
+            <VCol cols="12">
+              <VTextField
+                v-if="loginType < 2"
+                v-model="password"
+                label="Password"
+                :counter="website.passwordLength"
+                :type="isPasswordVisible ? 'text' : 'password'"
+                :append-inner-icon="isPasswordVisible ? 'fas fa-eye' : 'fas fa-eye-slash'"
+                @click:append-inner="isPasswordVisible = !isPasswordVisible"
+              />
+              <CountDown v-else :getAuthCode="getAuthCode" :email="nameOrEmail"/>
+            </VCol>
 
-             <!-- login button -->
-             <VCol cols="12">
-               <VBtn
-                 block
-                 @click="login"
-               >
-                 Login
-               </VBtn>
-             </VCol>
-             <!-- create account -->
-             <VCol cols="12" style="margin-top: 15px">
-               <VRow justify="space-between">
-                 <VCol
-                   cols="6"
-                   class="text-center text-base"
-                 >
-                   <v-btn variant="text" @click="router.push({path:'/register'})">Create a account</v-btn>
-                 </VCol>
-                 <VCol cols="6" align-self="center" style="margin-bottom: 20px">
-                   <v-btn variant="text" @click="router.push({path:'/find-password'})">find password</v-btn>
-                 </VCol>
-               </VRow>
-             </VCol>
+            <!-- login button -->
+            <VCol cols="12">
+              <VBtn
+                block
+                @click="login"
+              >
+                Login
+              </VBtn>
+            </VCol>
+            <!-- create account -->
+            <VCol cols="12" style="margin-top: 15px">
+              <VRow justify="space-between">
+                <VCol
+                  cols="6"
+                  class="text-center text-base"
+                >
+                  <v-btn variant="text" @click="router.push({path:'/register'})">Create a account</v-btn>
+                </VCol>
+                <VCol cols="6" align-self="center" style="margin-bottom: 20px">
+                  <v-btn variant="text" @click="router.push({path:'/find-password'})">find password</v-btn>
+                </VCol>
+              </VRow>
+            </VCol>
 
-           </VRow>
-         </VCardText>
-       </VCard>
-     </div>
- </FullScreen>
+          </VRow>
+        </VCardText>
+      </VCard>
+    </div>
+  </FullScreen>
 </template>
 
 <style scoped>

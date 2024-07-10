@@ -1,19 +1,14 @@
 <script setup lang="ts">
-import {useEditStore} from "../../store/edit";
-import {onMounted, ref} from "vue";
+import {useAppStore} from "../../store/app";
 
-
-const editStore = useEditStore();
-
-function switchReadonly(): void {
-  editStore.switchReadonly()
-}
+const appStore = useAppStore()
 
 </script>
 
 <template>
   <div class="left-top">
-    <VBtn @click="switchReadonly" :icon="`fas fa-lock${editStore.readonly ? '-open' :''}`" variant="tonal"/>
+    <VBtn @click="appStore.edit.switchReadOnly()" :icon="`fas fa-lock${appStore.edit.readOnly ? '-open' :''}`"
+          variant="tonal"/>
     <div style="height: 5px"></div>
     <SubmitPost :is-seek-help="true"/>
     <div style="height: 5px"></div>
